@@ -20,15 +20,10 @@ public class RestTemplateInterceptor implements ClientHttpRequestInterceptor {
     @Override
     public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) throws IOException {
 
-        String token = manager.authorize(
-                        OAuth2AuthorizeRequest
+        String token = manager.authorize(OAuth2AuthorizeRequest
                         .withClientRegistrationId("my-internal-client")
                         .principal("internal")
-                        .build()
-                )
-                .getAccessToken()
-                .getTokenType()
-                .getValue();
+                        .build()).getAccessToken().getTokenType().getValue();
 
         request.getHeaders().add("Authorization", "Bearer"+token);
 

@@ -55,11 +55,10 @@ public class userServiceImpl implements UserService{
         //above logic will not work because in Rating class have Hotel object.
 
         //localhost:8083 replace to service name
-        Rating[] ratingOfUsers = restTemplate.getForObject("http://RATING-SERVICE/ratings/users/"+user.getUserId(), Rating[].class);
+        String url = "http://RATING-SERVICE/ratings/users/";
+        Rating[] ratingOfUsers = restTemplate.getForObject(url + user.getUserId(), Rating[].class);
         logger.info("{}", ratingOfUsers);
-
         List<Rating> ratings = Arrays.stream(ratingOfUsers).collect(Collectors.toList());
-
         List<Rating> ratingList = ratings.stream().map(rating -> {
             //api call to hotel service to get hotel
             //http://localhost:8082/hotel/a849a625-bc84-4821-a94e-817f904efcfc
