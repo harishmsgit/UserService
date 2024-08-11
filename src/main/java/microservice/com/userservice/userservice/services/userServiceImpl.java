@@ -16,7 +16,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-public class userServiceImpl implements UserService{
+public class userServiceImpl implements UserService {
 
     @Autowired
     private UserRepository userRepository;
@@ -34,17 +34,37 @@ public class userServiceImpl implements UserService{
 
         String randomUserId = UUID.randomUUID().toString();
         users.setUserId(randomUserId);
-
         return userRepository.save(users);
     }
 
     @Override
     public List<Users> getAllUsers() {
-        //Implement RATING-SERVICE call : for ll users
         return userRepository.findAll();
     }
 
     @Override
+    public Users getUsers(String userId) {
+        Users user = userRepository.findById(userId).orElseThrow(() -> new ResouceNotFoundException("User with given id is not found on server !! : " + userId));
+        String url = "http://RATING-SERVICE/ratings/users/";
+        Rating[] ratingOfUsers = restTemplate.getForObject(url + user.getUserId(), Rating[].class);
+        logger.info("{}", ratingOfUsers);
+        List<Rating> ratings = Arrays.stream(ratingOfUsers).collect(Collectors.toList());
+        List<Rating> ratingList = ratings.stream().map(rating -> {
+            Hotel hotel = hotelService.getHotel(rating.getHotelId()); //Calling by FeignClient
+            rating.setHotel(hotel);
+            return rating;
+        }).collect(Collectors.toList());
+
+        user.setRatings(ratingList);
+        return user;
+    }
+}
+
+
+
+
+
+    /*@Override
     public Users getUsers(String userId) {
         Users user = userRepository.findById(userId).orElseThrow(() -> new ResouceNotFoundException("User with given id is not found on server !! : " + userId));
 
@@ -77,4 +97,5 @@ public class userServiceImpl implements UserService{
         user.setRatings(ratingList);
         return user;
     }
-}
+    }*/
+
