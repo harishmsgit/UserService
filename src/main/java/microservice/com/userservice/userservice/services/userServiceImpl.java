@@ -45,8 +45,8 @@ public class userServiceImpl implements UserService {
     @Override
     public Users getUsers(String userId) {
         Users user = userRepository.findById(userId).orElseThrow(() -> new ResouceNotFoundException("User with given id is not found on server !! : " + userId));
-        String url = "http://RATING-SERVICE/ratings/users/";
-        Rating[] ratingOfUsers = restTemplate.getForObject(url + user.getUserId(), Rating[].class);
+        //String url = "http://RATING-SERVICE/ratings/users/";
+        Rating[] ratingOfUsers = restTemplate.getForObject("http://RATING-SERVICE/ratings/users/"+user.getUserId(), Rating[].class);
         logger.info("{}", ratingOfUsers);
         List<Rating> ratings = Arrays.stream(ratingOfUsers).collect(Collectors.toList());
         List<Rating> ratingList = ratings.stream().map(rating -> {

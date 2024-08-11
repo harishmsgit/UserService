@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -48,6 +49,7 @@ public class UserController {
 
     int retryCount=1;
     public ResponseEntity<Users> ratingHotelFallback(String userId, Exception ex){
+        ex.printStackTrace();
         //logger.info("Service is DOWN ,fallback is executed: "+ ex.getMessage());
         logger.info("Get single User Handler: UserController");
         logger.info("retry count: " + retryCount);
